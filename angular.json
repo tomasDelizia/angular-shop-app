@@ -7,7 +7,7 @@
       "i18n": {
         "sourceLocale": "en-US",
         "locales": {
-          "en-US": "src/locale/messages.en.json"
+          "es-ES": "src/locale/messages.es-ES.json"
         }
       },
       "projectType": "application",
@@ -20,7 +20,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "localize": ["en-US"],
-             "outputPath": "dist/shop-app",
+            "outputPath": "dist/shop-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
