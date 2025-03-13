@@ -4,6 +4,12 @@
   "newProjectRoot": "projects",
   "projects": {
     "shop-app": {
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "en-US": "src/locale/messages.en.json"
+        }
+      },
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,11 +19,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/shop-app",
+            "localize": ["en-US"],
+             "outputPath": "dist/shop-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -75,7 +83,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
