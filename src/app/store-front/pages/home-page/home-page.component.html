@@ -1,12 +1,4 @@
 <h1 class="text-3xl font-bold font-montserrat" i18n>All products</h1>
 <h3 class="text-xl" i18n>For every taste</h3>
 
-<div
-  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-2 gap-3"
->
-  <product-card />
-  <product-card />
-  <product-card />
-  <product-card />
-  <product-card />
-</div>
+<product-list [products]="productsResource.value()?.products ?? []" />
