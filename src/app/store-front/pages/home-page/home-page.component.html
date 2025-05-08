@@ -1,5 +1,8 @@
 <h1 class="text-3xl font-bold font-montserrat" i18n>All products</h1>
 <h3 class="text-xl" i18n>For every taste</h3>
 
-<app-pagination [pages]="productsResource.value()?.pages ?? 0" />
 <product-list [products]="productsResource.value()?.products ?? []" />
+<app-pagination
+  [pages]="productsResource.value()?.pages ?? 0"
+  [currentPage]="paginationService.currentPage()"
+/>
