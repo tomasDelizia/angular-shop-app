@@ -23,6 +23,8 @@ export class ProductsService {
 
   private productsCache = new Map<string, ProductsResponse>();
 
+  private productsByIdSlugCache = new Map<string, Product>();
+
   getProducts(options: Options): Observable<ProductsResponse> {
     const { limit = 9, offset = 0, gender = '' } = options;
 
@@ -46,6 +48,13 @@ export class ProductsService {
   }
 
   getProductByIdSlug(idSlug: string): Observable<Product> {
-    return this.http.get<Product>(`${baseUrl}/products/${idSlug}`);
+    const key = idSlug;
+    if (this.productsByIdSlugCache.has(key)) {
+      return of(this.productsByIdSlugCache.get(key)!);
+    }
+    return this.http.get<Product>(`${baseUrl}/products/${idSlug}`).pipe(
+      tap((product) => console.log(product)),
+      tap((product) => this.productsByIdSlugCache.set(key, product))
+    );
   }
 }
