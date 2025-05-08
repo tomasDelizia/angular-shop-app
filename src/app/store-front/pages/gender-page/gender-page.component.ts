@@ -1,4 +1,3 @@
-import { TitleCasePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
