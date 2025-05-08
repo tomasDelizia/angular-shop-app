@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ProductsService } from '@products/services/products.service';
-import { ProductListComponent } from '../../../products/components/product-list/product-list.component';
+import { ProductListComponent } from '@products/components/product-list/product-list.component';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-home-page',
-  imports: [ProductListComponent],
+  imports: [ProductListComponent, PaginationComponent],
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {
