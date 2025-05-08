@@ -1,1 +1,7 @@
-<p>gender-page works!</p>,
+<h1 class="text-3xl font-bold font-montserrat" i18n>
+  All
+  <span class="text-accent">{{ gender() }}</span>
+  products
+</h1>
+
+<product-list [products]="productsResource.value()?.products ?? []" />
