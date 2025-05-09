@@ -39,26 +39,16 @@ export class AuthService {
       .post<AuthResponse>(`${baseUrl}/auth/login`, { email, password })
       .pipe(
         // Define side effects
-        tap((resp) => {
-          this._user.set(resp.user);
-          this._authStatus.set('authenticated');
-          this._token.set(resp.token);
-          localStorage.setItem('token', resp.token);
-        }),
-        map(() => true),
+        map((resp) => this.handleAuthSuccess(resp)),
         // Handle errors
-        catchError((error: any) => {
-          this._user.set(null);
-          this._authStatus.set('not-authenticated');
-          this._token.set(null);
-          return of(false);
-        })
+        catchError((error: any) => this.handleAuthError(error))
       );
   }
 
   checkStatus(): Observable<boolean> {
     const token = localStorage.getItem('token');
     if (!token) {
+      this.logout();
       return of(false);
     }
 
@@ -67,19 +57,28 @@ export class AuthService {
         headers: { Authorization: `Bearer ${token}` },
       })
       .pipe(
-        tap((resp) => {
-          this._user.set(resp.user);
-          this._authStatus.set('authenticated');
-          this._token.set(resp.token);
-          localStorage.setItem('token', resp.token);
-        }),
-        map(() => true),
-        catchError((error: any) => {
-          this._user.set(null);
-          this._authStatus.set('not-authenticated');
-          this._token.set(null);
-          return of(false);
-        })
+        map((resp) => this.handleAuthSuccess(resp)),
+        catchError((error: any) => this.handleAuthError(error))
       );
+  }
+
+  logout() {
+    this._user.set(null);
+    this._authStatus.set('not-authenticated');
+    this._token.set(null);
+    localStorage.removeItem('token');
+  }
+
+  private handleAuthSuccess(resp: AuthResponse) {
+    this._user.set(resp.user);
+    this._authStatus.set('authenticated');
+    this._token.set(resp.token);
+    localStorage.setItem('token', resp.token);
+    return true;
+  }
+
+  private handleAuthError(error: any) {
+    this.logout();
+    return of(false);
   }
 }
