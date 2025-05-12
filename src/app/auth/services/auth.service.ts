@@ -31,6 +31,14 @@ export class AuthService {
     return this._user() ? 'authenticated' : 'not-authenticated';
   });
 
+  isAuthenticated = computed<boolean>(
+    () => this.authStatus() == 'authenticated'
+  );
+
+  isNotAuthenticated = computed<boolean>(
+    () => this.authStatus() == 'not-authenticated'
+  );
+
   user = computed<User | null>(() => this._user());
   token = computed<string | null>(() => this._token());
 
