@@ -8,11 +8,15 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { loggingInterceptor } from '@shared/interceptors/logging.interceptors';
+import { authInterceptor } from '@auth/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([loggingInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([loggingInterceptor, authInterceptor])
+    ),
   ],
 };
