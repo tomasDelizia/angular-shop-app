@@ -1,0 +1,94 @@
+<h1 class="text-2xl font-bold">{{ product().title }}</h1>
+<div class="divider"></div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <!-- Datos generales -->
+  <div class="flex flex-col gap-2">
+    <h2 class="text-2xl font-bold h-12" i18n>Product Info</h2>
+    <input
+      type="text"
+      placeholder="Title"
+      class="input input-bordered w-full"
+      i18n
+    />
+
+    <input
+      type="text"
+      placeholder="Slug"
+      class="input input-bordered w-full"
+      i18n
+    />
+
+    <textarea
+      class="textarea textarea-bordered"
+      placeholder="Description"
+      rows="6"
+      i18n
+    ></textarea>
+
+    <h2 class="text-lg font-bold" i18n>Price Info</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <input
+        type="number"
+        placeholder="Price"
+        class="input input-bordered w-full"
+        i18n
+      />
+
+      <input
+        type="number"
+        placeholder="Stock"
+        class="input input-bordered w-full"
+        i18n
+      />
+    </div>
+
+    <!-- tags -->
+    <input
+      type="text"
+      placeholder="Tags"
+      class="input input-bordered w-full"
+      i18n
+    />
+
+    <!-- Botones para el género -->
+    <div class="grid grid-cols-3 gap-2">
+      <!-- <button class="btn btn-sm btn-outline">Masculino</button> -->
+      <button class="btn btn-sm btn-primary" i18n>Male</button>
+      <button class="btn btn-sm btn-accent" i18n>Female</button>
+      <button class="btn btn-sm btn-warning" i18n>Unisex</button>
+    </div>
+
+    <!-- <select class="select select-bordered w-full">
+      <option value="male">Masculino</option>
+      <option value="female">Femenino</option>
+      <option value="unisex">Unisex</option>
+    </select> -->
+
+    <!-- Sizes -->
+    <div class="grid grid-cols-6 gap-2">
+      @for (size of sizes; track size) {
+      <button class="btn btn-sm btn-outline">{{ size }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- Imágenes -->
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-end h-12">
+      <button class="btn btn-secondary" type="submit" i18n>
+        <!-- <span class="loading loading-spinner loading-sm"></span> -->
+
+        Save
+      </button>
+    </div>
+
+    <product-carousel
+      [images]="product().images"
+      [productName]="product().title"
+    />
+
+    <input type="file" class="file-input file-input-bordered w-full mt-4" />
+  </div>
+</div>
