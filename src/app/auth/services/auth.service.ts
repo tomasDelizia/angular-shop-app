@@ -39,6 +39,11 @@ export class AuthService {
     () => this.authStatus() == 'not-authenticated'
   );
 
+  isAdmin = computed<boolean>(
+    () =>
+      (this.isAuthenticated() && this._user()?.roles.includes('admin')) || false
+  );
+
   user = computed<User | null>(() => this._user());
   token = computed<string | null>(() => this._token());
 

@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
 import { AuthService } from '@auth/services/auth.service';
-import { first, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 export const NotAuthenticatedGuard: CanMatchFn = async (
   route: Route,
