@@ -57,4 +57,16 @@ export class ProductsService {
       tap((product) => this.productsByIdSlugCache.set(key, product))
     );
   }
+
+  // TODO Update
+  getProductById(id: string): Observable<Product> {
+    const key = id;
+    if (this.productsByIdSlugCache.has(key)) {
+      return of(this.productsByIdSlugCache.get(key)!);
+    }
+    return this.http.get<Product>(`${baseUrl}/products/${id}`).pipe(
+      tap((product) => console.log(product)),
+      tap((product) => this.productsByIdSlugCache.set(key, product))
+    );
+  }
 }
