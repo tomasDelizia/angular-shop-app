@@ -1,7 +1,11 @@
 <h1 class="text-2xl font-bold">{{ product().title }}</h1>
 <div class="divider"></div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<form
+  [formGroup]="productForm"
+  (ngSubmit)="onSubmit()"
+  class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+>
   <!-- Datos generales -->
   <div class="flex flex-col gap-2">
     <h2 class="text-2xl font-bold h-12" i18n>Product Info</h2>
@@ -10,6 +14,7 @@
       placeholder="Title"
       class="input input-bordered w-full"
       i18n
+      formControlName="title"
     />
 
     <input
@@ -17,6 +22,7 @@
       placeholder="Slug"
       class="input input-bordered w-full"
       i18n
+      formControlName="slug"
     />
 
     <textarea
@@ -24,6 +30,7 @@
       placeholder="Description"
       rows="6"
       i18n
+      formControlName="description"
     ></textarea>
 
     <h2 class="text-lg font-bold" i18n>Price Info</h2>
@@ -34,6 +41,7 @@
         placeholder="Price"
         class="input input-bordered w-full"
         i18n
+        formControlName="price"
       />
 
       <input
@@ -41,6 +49,7 @@
         placeholder="Stock"
         class="input input-bordered w-full"
         i18n
+        formControlName="stock"
       />
     </div>
 
@@ -50,14 +59,15 @@
       placeholder="Tags"
       class="input input-bordered w-full"
       i18n
+      formControlName="tags"
     />
 
     <!-- Botones para el género -->
     <div class="grid grid-cols-3 gap-2">
       <!-- <button class="btn btn-sm btn-outline">Masculino</button> -->
-      <button class="btn btn-sm btn-primary" i18n>Male</button>
-      <button class="btn btn-sm btn-accent" i18n>Female</button>
-      <button class="btn btn-sm btn-warning" i18n>Unisex</button>
+      <button type="button" class="btn btn-sm btn-primary" i18n>Male</button>
+      <button type="button" class="btn btn-sm btn-accent" i18n>Female</button>
+      <button type="button" class="btn btn-sm btn-warning" i18n>Unisex</button>
     </div>
 
     <!-- <select class="select select-bordered w-full">
@@ -69,7 +79,8 @@
     <!-- Sizes -->
     <div class="grid grid-cols-6 gap-2">
       @for (size of sizes; track size) {
-      <button class="btn btn-sm btn-outline">{{ size }}</button>
+      <!-- Ponemos type=button para que no se confunda con el botón que propaga el form -->
+      <button class="btn btn-sm btn-outline" type="button">{{ size }}</button>
       }
     </div>
   </div>
@@ -91,4 +102,4 @@
 
     <input type="file" class="file-input file-input-bordered w-full mt-4" />
   </div>
-</div>
+</form>
