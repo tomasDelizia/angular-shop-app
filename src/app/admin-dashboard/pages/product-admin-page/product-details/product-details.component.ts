@@ -45,6 +45,19 @@ export class ProductDetailsComponent implements OnInit {
     // this.productForm.patchValue(formLike as any);
   }
 
+  onSizeClicked(size: string) {
+    const currentSizes = this.productForm.value.sizes ?? [];
+    // Toggle size in the sizes array
+    const index = currentSizes.indexOf(size);
+    if (index > -1) {
+      currentSizes.splice(index, 1);
+    } else {
+      currentSizes.push(size);
+    }
+    // Update the form control with the new sizes array
+    this.productForm.patchValue({ sizes: currentSizes });
+  }
+
   onSubmit() {
     console.log(this.productForm.value);
   }
