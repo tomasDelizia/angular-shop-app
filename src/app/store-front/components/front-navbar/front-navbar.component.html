@@ -75,6 +75,10 @@
     </ul>
   </div>
   <div class="navbar-end gap-4">
+    @if (authService.isAdmin()) {
+    <a routerLink="/admin" class="btn btn-accent" i18n>Admin Panel</a>
+    }
+    <!-- -->
     @if (authService.isAuthenticated()) {
     <button class="btn btn-ghost">{{ authService.user()?.fullName }}</button>
     <button class="btn btn-error btn-sm" i18n (click)="authService.logout()">
