@@ -23,7 +23,7 @@ export class ProductsService {
 
   private productsCache = new Map<string, ProductsResponse>();
 
-  private productsByIdSlugCache = new Map<string, Product>();
+  private productsByIdOrSlugCache = new Map<string, Product>();
 
   getProducts(options: Options): Observable<ProductsResponse> {
     const { limit = 9, offset = 0, gender = '' } = options;
@@ -49,24 +49,24 @@ export class ProductsService {
 
   getProductByIdSlug(idSlug: string): Observable<Product> {
     const key = idSlug;
-    if (this.productsByIdSlugCache.has(key)) {
-      return of(this.productsByIdSlugCache.get(key)!);
+    if (this.productsByIdOrSlugCache.has(key)) {
+      return of(this.productsByIdOrSlugCache.get(key)!);
     }
     return this.http.get<Product>(`${baseUrl}/products/${idSlug}`).pipe(
       tap((product) => console.log(product)),
-      tap((product) => this.productsByIdSlugCache.set(key, product))
+      tap((product) => this.productsByIdOrSlugCache.set(key, product))
     );
   }
 
   // TODO Update
   getProductById(id: string): Observable<Product> {
     const key = id;
-    if (this.productsByIdSlugCache.has(key)) {
-      return of(this.productsByIdSlugCache.get(key)!);
+    if (this.productsByIdOrSlugCache.has(key)) {
+      return of(this.productsByIdOrSlugCache.get(key)!);
     }
     return this.http.get<Product>(`${baseUrl}/products/${id}`).pipe(
       tap((product) => console.log(product)),
-      tap((product) => this.productsByIdSlugCache.set(key, product))
+      tap((product) => this.productsByIdOrSlugCache.set(key, product))
     );
   }
 
@@ -75,6 +75,20 @@ export class ProductsService {
     productLike: Partial<Product>
   ): Observable<Product> {
     console.log('Update product', productLike);
-    return this.http.patch<Product>(`${baseUrl}/products/${id}`, productLike);
+    return this.http
+      .patch<Product>(`${baseUrl}/products/${id}`, productLike)
+      .pipe(tap((product) => this.updateProductCache(product)));
+  }
+
+  updateProductCache(product: Product) {
+    const productId = product.id;
+    this.productsByIdOrSlugCache.set(productId, product);
+
+    this.productsCache.forEach((response) => {
+      response.products = response.products.map((current) =>
+        current.id === productId ? product : current
+      );
+    });
+    console.log('Product cache updated');
   }
 }
