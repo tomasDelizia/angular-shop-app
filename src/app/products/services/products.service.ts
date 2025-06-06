@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { User } from '@auth/interfaces/auth.interfaces';
 import {
+  Gender,
   Product,
   ProductsResponse,
 } from '@products/interfaces/product.interfaces';
-import { map, Observable, of, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 const baseUrl = environment.baseUrl;
@@ -14,6 +16,20 @@ interface Options {
   offset?: number;
   gender?: string;
 }
+
+const emptyProduct: Product = {
+  id: 'new',
+  title: '',
+  price: 0,
+  description: '',
+  slug: '',
+  stock: 0,
+  sizes: [],
+  gender: Gender.Men,
+  tags: [],
+  images: [],
+  user: {} as User,
+};
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +76,10 @@ export class ProductsService {
 
   // TODO Update
   getProductById(id: string): Observable<Product> {
+    // If the id is 'new', return an empty product
+    if (id === 'new') {
+      return of(emptyProduct);
+    }
     const key = id;
     if (this.productsByIdOrSlugCache.has(key)) {
       return of(this.productsByIdOrSlugCache.get(key)!);
@@ -68,6 +88,13 @@ export class ProductsService {
       tap((product) => console.log(product)),
       tap((product) => this.productsByIdOrSlugCache.set(key, product))
     );
+  }
+
+  createProduct(productLike: Partial<Product>): Observable<Product> {
+    console.log('Create product', productLike);
+    return this.http
+      .post<Product>(`${baseUrl}/products`, productLike)
+      .pipe(tap((product) => this.updateProductCache(product, true)));
   }
 
   updateProduct(
@@ -80,10 +107,14 @@ export class ProductsService {
       .pipe(tap((product) => this.updateProductCache(product)));
   }
 
-  updateProductCache(product: Product) {
+  updateProductCache(product: Product, isNew = false): void {
     const productId = product.id;
     this.productsByIdOrSlugCache.set(productId, product);
 
+    if (isNew) {
+      console.log('New product added to cache');
+      return;
+    }
     this.productsCache.forEach((response) => {
       response.products = response.products.map((current) =>
         current.id === productId ? product : current
