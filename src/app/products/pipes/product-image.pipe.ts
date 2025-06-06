@@ -9,7 +9,7 @@ const apiUrl = environment.baseUrl;
 export class ProductImagePipe implements PipeTransform {
   transform(value: string | string[]): any {
     const noImageUrl = './assets/images/no-image.jpg';
-    if (value === null || value === undefined) {
+    if (value === null || value === undefined || value === '') {
       return noImageUrl;
     }
     if (Array.isArray(value)) {
