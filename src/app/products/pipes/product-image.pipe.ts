@@ -17,6 +17,8 @@ export class ProductImagePipe implements PipeTransform {
         ? `${apiUrl}/files/product/${value[0]}`
         : noImageUrl;
     }
-    return `${apiUrl}/files/product/${value}`;
+    return value.startsWith('blob:')
+      ? value
+      : `${apiUrl}/files/product/${value}`;
   }
 }
