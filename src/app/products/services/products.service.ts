@@ -6,7 +6,7 @@ import {
   Product,
   ProductsResponse,
 } from '@products/interfaces/product.interfaces';
-import { Observable, of, tap } from 'rxjs';
+import { forkJoin, map, Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 const baseUrl = environment.baseUrl;
@@ -121,5 +121,30 @@ export class ProductsService {
       );
     });
     console.log('Product cache updated');
+  }
+
+  uploadImages(images?: FileList): Observable<string[]> {
+    // If no images are provided, return an empty observable
+    if (!images || images.length === 0) {
+      return of([]);
+    }
+    const uploadObservables = Array.from(images).map((image) =>
+      this.uploadImage(image)
+    );
+    // Use forkJoin to wait for all uploads tasks to complete
+    return forkJoin(uploadObservables).pipe(
+      tap((fileNames) => console.log('All images uploaded:', fileNames))
+    );
+  }
+
+  uploadImage(imageFile: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    return this.http
+      .post<{ fileName: string }>(`${baseUrl}/files/products`, formData)
+      .pipe(
+        tap((response) => console.log('Image uploaded:', response.fileName)),
+        map((response) => response.fileName)
+      );
   }
 }
