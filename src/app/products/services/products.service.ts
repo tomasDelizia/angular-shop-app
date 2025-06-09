@@ -6,7 +6,7 @@ import {
   Product,
   ProductsResponse,
 } from '@products/interfaces/product.interfaces';
-import { forkJoin, map, Observable, of, tap } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 const baseUrl = environment.baseUrl;
@@ -90,21 +90,44 @@ export class ProductsService {
     );
   }
 
-  createProduct(productLike: Partial<Product>): Observable<Product> {
+  createProduct(
+    productLike: Partial<Product>,
+    imageFiles?: FileList
+  ): Observable<Product> {
     console.log('Create product', productLike);
-    return this.http
-      .post<Product>(`${baseUrl}/products`, productLike)
-      .pipe(tap((product) => this.updateProductCache(product, true)));
+
+    return this.uploadImages(imageFiles).pipe(
+      map((newImages) => ({
+        ...productLike,
+        images: [...newImages],
+      })),
+      switchMap((productToCreate) =>
+        this.http.post<Product>(`${baseUrl}/products`, productToCreate)
+      ),
+      tap((product) => this.updateProductCache(product, true))
+    );
   }
 
   updateProduct(
     id: string,
-    productLike: Partial<Product>
+    productLike: Partial<Product>,
+    imageFiles?: FileList
   ): Observable<Product> {
     console.log('Update product', productLike);
-    return this.http
-      .patch<Product>(`${baseUrl}/products/${id}`, productLike)
-      .pipe(tap((product) => this.updateProductCache(product)));
+
+    const currentImages = productLike.images ?? [];
+
+    return this.uploadImages(imageFiles).pipe(
+      map((newImages) => ({
+        ...productLike,
+        images: [...currentImages, ...newImages],
+      })),
+      // Chain the observable to ensure images are uploaded before updating the product
+      switchMap((productToUpdate) =>
+        this.http.patch<Product>(`${baseUrl}/products/${id}`, productToUpdate)
+      ),
+      tap((product) => this.updateProductCache(product))
+    );
   }
 
   updateProductCache(product: Product, isNew = false): void {
@@ -141,7 +164,7 @@ export class ProductsService {
     const formData = new FormData();
     formData.append('file', imageFile);
     return this.http
-      .post<{ fileName: string }>(`${baseUrl}/files/products`, formData)
+      .post<{ fileName: string }>(`${baseUrl}/files/product`, formData)
       .pipe(
         tap((response) => console.log('Image uploaded:', response.fileName)),
         map((response) => response.fileName)

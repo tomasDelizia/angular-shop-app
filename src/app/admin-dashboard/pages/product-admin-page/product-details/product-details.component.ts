@@ -99,13 +99,17 @@ export class ProductDetailsComponent implements OnInit {
     if (this.product().id === 'new') {
       // Create a new product
       const product = await firstValueFrom(
-        this.productsService.createProduct(productLike)
+        this.productsService.createProduct(productLike, this.imageFiles)
       );
       this.router.navigate(['/admin/products', product.id]);
     } else {
       // Update existing product
       const product = await firstValueFrom(
-        this.productsService.updateProduct(this.product().id, productLike)
+        this.productsService.updateProduct(
+          this.product().id,
+          productLike,
+          this.imageFiles
+        )
       );
     }
     this.wasSaved.set(true);
